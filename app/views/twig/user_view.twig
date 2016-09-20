@@ -1,0 +1,27 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+
+    <h1>Страница пользователя</h1>
+    <div class="row">
+
+    {% for row in data %}
+        <p class="col-md-4">
+            <h2>Ваш логин: {{ row.login }}</h2>
+            <p>Электронная почта:<br> <a href="mailto:{{ row.email }}">{{ row.email }}</a></p>
+            <p>Имя: {{ row.name }}</p>
+            <p>Возраст: {{ row.age }}</a></p>
+            <p>О себе: {{ row.about }}</a></p>
+            <p>Аватар: <img src="{{ row.avatar }}"></a></p>
+        </div>
+    {% endfor %}
+        {#<h3>Загрузить аватар</h3>#}
+        {#<form action="user/Upload.php" method="post" enctype="multipart/form-data" id="form">#}
+        {#<p>Выбрать файл:</p><input type="file" name="image" id="image">#}
+            {#<input type="submit" name="submit">#}
+        {#</form>#}
+        {#<div id="load"></div>#}
+    </div>
+
+
+{% endblock %}

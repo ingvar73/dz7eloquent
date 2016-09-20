@@ -1,0 +1,20 @@
+{
+  "name": "vendor_name/package_name",
+  "description": "description_text",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "author's name",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "illuminate/database": "5.3.x-dev",
+    "illuminate/html": "v5.0.0",
+    "phpmailer/phpmailer": "v5.2.16",
+    "intervention/image": "2.3.8",
+    "wixel/gump": "1.4",
+    "fzaninotto/faker": "v1.6.0"
+  }
+}
