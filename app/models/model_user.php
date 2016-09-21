@@ -1,29 +1,19 @@
 <?php
 require_once __DIR__.'/../components/Db.php';
+require_once __DIR__.'/../components/init.php';
 class Model_User extends Model {
 
     public function get_data()
     {
         session_start();
-        $db = Db::getInstance();
+//        $db = Db::getInstance();
 
 
-        if (!empty($_SESSION['login']) and !empty($_SESSION['password'])) {
-            //если существует логин и пароль в сессиях, то проверяем их
+        if (!empty($_SESSION['login'])) {
             $login = $_SESSION['login'];
-            $result = $db->query("SELECT id, login, email, name, age, about, avatar FROM users WHERE login='$login'");
-            $myrow = $result->fetch_assoc();
+            $user = User::where('login', $login)->first()->toArray();
 
-        return array(
-            array(
-                "login" => $myrow['login'],
-                "email" => $myrow['email'],
-                "name" => $myrow['name'],
-                "age" => $myrow['age'],
-                "about" => $myrow['about'],
-                "avatar" => $myrow['avatar'],
-                )
-            );
+            return ($user);
         }
 
 

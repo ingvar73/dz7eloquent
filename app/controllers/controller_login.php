@@ -3,6 +3,7 @@ require_once __DIR__.'/../components/Db.php';
 require_once __DIR__.'/../models/model_redirect.php';
 require_once __DIR__.'/../models/model_auth.php';
 require __DIR__."/../components/init.php";
+require __DIR__."/../lib/Session.php";
 
 class Controller_Login extends Controller {
     public function action_index()
@@ -17,7 +18,7 @@ class Controller_Login extends Controller {
 //        $user = new User();
 
         if(isset($_POST['auth'])){
-            session_start();
+            Session::init();
             $secret = '6LceOQcUAAAAACNz7JEre1XXLMRzQGnBsUIMFqmD';
             $response = $_POST['g-recaptcha-response'];
             $remoteip = $_SERVER['REMOTE_ADDR'];
@@ -52,6 +53,7 @@ class Controller_Login extends Controller {
                     $check = User::where('login', $login)->where('password', $password)->count();
 
                     if ($check){
+                        $_SESSION['login'] = $login;
                         Model_Redirect::redirectToPage('user/');
 
                         //Все хорошо, переход на страницу пользователя
