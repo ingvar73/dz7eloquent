@@ -1,10 +1,7 @@
 <?php
 //error_reporting(E_ALL);
 require_once __DIR__.'/../components/Db.php';
-//require_once __DIR__.'/../components/Upload.php';
-//require_once __DIR__.'/../components/User_Upload_Image.php';
-//require_once __DIR__.'/../components/class.upload.php';
-//require_once 'vendor/verot/class.upload.php/src/class.upload.php';
+
 require_once __DIR__.'/../models/model_redirect.php';
 // Читаем настройки config для отправки письма
 require_once(__DIR__.'/../lib/phpmailer/PHPMailerAutoload.php');
@@ -15,10 +12,7 @@ define ('ROOT', $dir_name);
 require __DIR__."/../components/init.php";
 
 class Controller_Signup extends Controller {
-    //    function __construct()
-//    {
-//        $this->basePath = $_SERVER[ 'DOCUMENT_ROOT' ];
-//    }
+
 
     public function action_index()
     {
@@ -29,7 +23,6 @@ class Controller_Signup extends Controller {
 
     public function action_register()
     {
-//        $db = Db::getInstance();
         $user = new User();
         Session::init();
         if(isset($_POST['register'])){
@@ -100,7 +93,7 @@ class Controller_Signup extends Controller {
 
 
 
-//                Session::set($login, $user->login);
+                Session::set($_SESSION['login'], $user->login);
 // отправка письма о регистрации
                 try{
                     $mail = new PHPMailer(true); // Создаем экземпляр класса PHPMailer

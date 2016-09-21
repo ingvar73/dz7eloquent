@@ -2,6 +2,8 @@
 require_once __DIR__.'/../components/Db.php';
 require_once __DIR__.'/../models/model_redirect.php';
 require_once __DIR__.'/../models/model_auth.php';
+require __DIR__."/../components/init.php";
+
 class Controller_Login extends Controller {
     public function action_index()
     {
@@ -12,52 +14,51 @@ class Controller_Login extends Controller {
 
     public function action_auth()
     {
-        $db = Db::getInstance();
+//        $user = new User();
 
         if(isset($_POST['auth'])){
             session_start();
-            $secret = '6LezGioTAAAAAISoHFhC2hEQHl1ZVftKqQB1Z_lg';
+            $secret = '6LceOQcUAAAAACNz7JEre1XXLMRzQGnBsUIMFqmD';
             $response = $_POST['g-recaptcha-response'];
             $remoteip = $_SERVER['REMOTE_ADDR'];
             $url = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$response&remoteip=$remoteip");
             $result_c = json_decode($url, TRUE);
 //            var_dump($result_c['success']);
 
-            $login = $db->escape($_POST['login']);
-            $password = $db->escape($_POST['password']);
+            $gump = new GUMP();
 
-            $reg = new Model_Auth($login, $password);
-            $reg->regex(Model_Auth::M_PASSWORD_PATTERN, $reg->password, 'Некорректный пароль!');
-            $reg->regex(Model_Auth::LOGIN_PATTERN, $reg->login, 'Некорректный логин!');
+            $_POST = $gump->sanitize($_POST); // You don't have to sanitize, but it's safest to do so.
 
-            $result = $db->query("SELECT id, email, password FROM users WHERE login = '{$reg->login}' AND activate = '1'");
-            $row = $db->fetch_assoc($result);
-//            var_dump($row['password']);
-//            var_dump($reg->password);
+            $gump->validation_rules(array(
+                'login'    => 'required|alpha_numeric|max_len,100|min_len,5',
+                'password'    => 'required|max_len,100|min_len,6',
+            ));
 
-            $reg->quality($reg->password, $row['password'], 'Пароли не совпадают или пользователь не зарегистрирован!');
+            $gump->filter_rules(array(
+                'login' => 'trim|sanitize_string',
+                'password' => 'trim',
+            ));
+
+            $validated_data = $gump->run($_POST);
 
 
-            if(empty($reg->getErrors())){
-                if ($row > 0 and $result_c['success'] == 1){
-                    print ("Пользователь авторизован!");
-                    setcookie("id", $row['id'], time()+60*60*24*30);
-                    $_SESSION["login"] = $login;
-                    $_SESSION["password"] = $password;
-                    $_SESSION["email"] = $row['email'];
+                if ($validated_data === false and $result_c['success'] !== 1){
+                    echo $gump->get_readable_errors(true);
+                } else {
+                    $login = $_POST['login'];
+                    $password = md5($_POST['password']);
 
-                } else{
-                    echo "Пользователь не существует, зарегистрируйтесь или каптча введена неверно!";
+// Проверка логина и пароля на совпадение
+                    $check = User::where('login', $login)->where('password', $password)->count();
+
+                    if ($check){
+                        Model_Redirect::redirectToPage('user/');
+
+                        //Все хорошо, переход на страницу пользователя
+                    }
+
                 }
-                Model_Redirect::redirectToPage('user/');
 
-                //Все хорошо, переход на страницу пользователя
-
-            } else {
-                foreach ($reg->getErrors() as $err){
-                    echo $err.'<br />';
-                }
-            }
         }
     }
 }
