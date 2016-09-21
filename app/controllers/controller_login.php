@@ -59,6 +59,9 @@ class Controller_Login extends Controller {
                         Model_Redirect::redirectToPage('user/');
 
                         //Все хорошо, переход на страницу пользователя
+                    } else
+                    {
+                        echo "<br> Введенный пароль не верен!";
                     }
 
                 }

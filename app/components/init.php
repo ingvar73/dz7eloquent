@@ -1,4 +1,4 @@
 <?php
 require "config.php";
 ?>
-<a href="index.php">На главную</a>
+<a href="/">На главную</a>
