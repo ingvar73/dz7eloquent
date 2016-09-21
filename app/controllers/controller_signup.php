@@ -93,7 +93,7 @@ class Controller_Signup extends Controller {
 
 
 
-                Session::set($_SESSION['login'], $user->login);
+//                Session::set($_SESSION['login'], $user->login);
 // отправка письма о регистрации
                 try{
                     $mail = new PHPMailer(true); // Создаем экземпляр класса PHPMailer
