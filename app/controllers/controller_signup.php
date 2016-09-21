@@ -68,62 +68,40 @@ class Controller_Signup extends Controller {
 
             $validated_data = $gump->run($_POST);
 
-            if($validated_data === false) {
+            if($validated_data === false and $result_c['success'] !== 1) {
                 echo $gump->get_readable_errors(true);
             } else {
-                print_r($validated_data); // validation successful
-            }
+                echo "<pre>";
+                print_r($validated_data);
+                $user->login = $_POST['login'];
+                $user->email = $_POST['email'];
+                $user->name = $_POST['name'];
+                $user->age = $_POST['age'];
+                $user->about = $_POST['about'];
+                $user->password = $_POST['password'];
+                $user->hash = md5(15);
+                $user->url = $_SERVER['SERVER_NAME'];
+                $cpassword = $_POST['cpassword'];
+//            }
+                if($user->password !== $cpassword){
+                    exit('Пароли не совпадают!');
+                } else
+                {
+                    $user->password = md5($user->password);
+                }
+                require_once __DIR__.'/../components/Upload.php';
+                $user->avatar = $avatar;
 
-            $user->login = $_POST['login'];
-            $user->email = $_POST['email'];
-            $user->name = $_POST['name'];
-            $user->age = $_POST['age'];
-            $user->about = $_POST['about'];
-            $user->password = $_POST['password'];
-            $user->cpassword = $_POST['cpassword'];
+                $check = User::where('login', $user->login)->count();
 
-
-
-//            $login = $db->escape($_POST['login']);
-//            $email = $db->escape($_POST['email']);
-//            $name = $db->escape($_POST['name']);
-//            $age = $db->escape($_POST['age']);
-//            $about = $db->escape($_POST['about']);
-//            $password = $db->escape($_POST['password']);
-//            $confirm_password = $db->escape($_POST['cpassword']);
-
-            //код для изображения
-//            var_dump($_FILES);
-            require_once __DIR__.'/../components/Upload.php';
-
-
-            $reg = new Model_Signup($login, $email, $password, $confirm_password, $name, $age, $about);
-            $result = $db->query("SELECT COUNT(login) FROM users WHERE login = '{$reg->login}'");
-            $row = $db->fetch_assoc($result);
-            $reg->unique($row, 'Логин неуникален!');
-            $result = $db->query("SELECT COUNT(email) FROM users WHERE email = '{$reg->email}'");
-            $row = $db->fetch_assoc($result);
-            $reg->unique($row, 'Email неуникален!');
-            $reg->len(5, 50, $name, 'Имя должно быть не менее 5 и не более 50 символов!');
-            $reg->min_max(10, 100, $age, 'Значение поля возраст должно быть не менее 10 и не более 100!');
-            $reg->len(50, 200, $about, 'Описание должно быть не менее 50 символов!');
-            $reg->quality($reg->password, $reg->confirm_password, 'Пароли не совпадают!');
-            $reg->regex(Model_Signup::M_PASSWORD_PATTERN, $reg->password, 'Некорректный пароль!');
-            $reg->regex(Model_Signup::LOGIN_PATTERN, $reg->login, 'Некорректный логин!');
-            $reg->regex(Model_Signup::EMAIL_PATTERN, $reg->email, 'Некорректный email!');
+                if(!$check){
+                    $user->save();
+                }
 
 
 
-            if(empty($reg->getErrors()) and $result_c['success'] == 1){
-                $reg->generateHash();
-                $hash = $reg->generateCode(10);
-//                var_dump($hash);
-                echo !$db->query("INSERT INTO users (login, email, password, name, age, about, avatar, hash, date) VALUES ('{$reg->login}', '{$reg->email}', '{$reg->password}', '{$reg->name}', '{$reg->age}', '{$reg->about}', '{$avatar}', '{$hash}', '{$reg->date}')") ? : 'Пользователь успешно создан! <br>На Ваш E-mail выслан код подтверждения!';
-                // Подготовка к отправке сообщения на почту
-                $active = $db->query("SELECT id, email, hash FROM users WHERE login = '{$reg->login}'");
-                $id_activ = $active->fetch_array();
-                Session::set($login, $reg->login);
-
+//                Session::set($login, $user->login);
+// отправка письма о регистрации
                 try{
                     $mail = new PHPMailer(true); // Создаем экземпляр класса PHPMailer
                     require_once(__DIR__.'/../lib/config.php');
@@ -136,13 +114,13 @@ class Controller_Signup extends Controller {
                     $mail->CharSet="UTF-8";  // Кодировка обмена сообщениями с SMTP сервером
                     $mail->Username   = $__smtp['username'];  // Имя пользователя на SMTP сервере
                     $mail->Password   = $__smtp['password'];  // Пароль от учетной записи на SMTP сервере
-                    $mail->AddAddress($id_activ['email'], $reg->login);  // Адресат почтового сообщения
+                    $mail->AddAddress($user->email, $user->login);  // Адресат почтового сообщения
                     $mail->AddReplyTo($__smtp['addreply'], 'First Last');  // Альтернативный адрес для ответа
                     $mail->SetFrom($__smtp['username'], $__smtp['mail_title']);  // Адресант почтового сообщения
                     $mail->Subject = htmlspecialchars($__smtp['mail_title']);  // Тема письма
-                    $mail->MsgHTML('Спасибо за регистрацию на нашем сайте DZ06.LOFTSCHOOL. Ваш логин: '.$reg->login.'  Для того чтобы войти в свой аккуант его нужно активировать.\n
+                    $mail->MsgHTML('Спасибо за регистрацию на нашем сайте DZ7.LOFTSCHOOL. Ваш логин: '.$user->login.'  Для того чтобы войти в свой аккуант его нужно активировать.\n
 Чтобы активировать ваш аккаунт, перейдите по ссылке:\n
-http://dz06.loftschool/signup/activation/?login='.$reg->login.'&hash='.$hash.'   С уважением, Администрация сайта'); // Текст сообщения
+http://dz7.loftschool/signup/activation/?id='.$user->id.'&hash='.$user->hash.'   С уважением, Администрация сайта'); // Текст сообщения
                     $mail->Send();
 //                    return 1;
                     echo "<br>На Ваш E-mail выслано письмо с cсылкой, для активации вашего аккуанта. <br><a href='/'>Главная страница</a></p>";
@@ -153,36 +131,27 @@ http://dz06.loftschool/signup/activation/?login='.$reg->login.'&hash='.$hash.'  
                 }
 
 
-            } else {
-                foreach ($reg->getErrors() as $err){
-                    echo $err.'<br />';
-                }
             }
         }
     }
 
     public function action_activation()
     {
-        $login = $_GET['login'];
+        $id = $_GET['id'];
         $hash = $_GET['hash'];
-        $db = Db::getInstance();
 
-        if ($db){
-            $active = $db->query("SELECT hash FROM users WHERE login = '{$login}'");
-            $hash_activate = $active->fetch_array();
-            if ($hash == $hash_activate['hash']){
-                // код подтверждения совпадает - активируем
-                echo !$db->query("UPDATE users SET activate = '1' WHERE login = '{$login}'");
-                echo "Авторизован";
-//                var_dump($login);
-//                var_dump($hash);
-                Model_Redirect::redirectToPage('login/');
+        if ($id and $hash){
+            $user = User::where('id', $id)->where('hash', $hash)->first();
+            if ($user){
+            $user->activate = true;
+            $user->save();
+            Model_Redirect::redirectToPage('login/');
             }
         } else
         {
-            echo "Сессия не открыта";
-            var_dump($_SESSION['id']);
-            Session::destroy();
+            echo "Неверный код активации";
+//            var_dump($_SESSION['id']);
+//            Model_Redirect::redirectToPage('login/');
         }
     }
 }

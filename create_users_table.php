@@ -16,4 +16,5 @@ Capsule::schema()->create('users', function ($table) {
     $table->string('url');
     $table->timestamp('date');
     $table->timestamps();
+    $table->rememberToken();
 });
