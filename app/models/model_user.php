@@ -9,11 +9,20 @@ class Model_User extends Model {
 //        $db = Db::getInstance();
 
 
-        if (!empty($_SESSION['login'])) {
+        if (!empty($_SESSION['id']) and !empty($_SESSION['login'])) {
+            $id = $_SESSION['id'];
             $login = $_SESSION['login'];
-            $user = User::where('login', $login)->first()->toArray();
-
-            return ($user);
+            $user = User::find($id);
+            return array(
+                array(
+                    "login" => $user->login,
+                    "email" => $user->email,
+                    "name" => $user->name,
+                    "age" => $user->age,
+                    "about" => $user->about,
+                    "avatar" => $user->avatar,
+                )
+            );
         }
 
 

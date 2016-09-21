@@ -51,8 +51,10 @@ class Controller_Login extends Controller {
 
 // Проверка логина и пароля на совпадение
                     $check = User::where('login', $login)->where('password', $password)->count();
+                    $id = User::where('login', $login)->pluck('id');
 
                     if ($check){
+                        $_SESSION['id'] = $id;
                         $_SESSION['login'] = $login;
                         Model_Redirect::redirectToPage('user/');
 
