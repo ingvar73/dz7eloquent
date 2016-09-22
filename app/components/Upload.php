@@ -8,7 +8,7 @@ $pattern_gif = '/[.](GIF)|(gif)$/';
 $pattern_jpg = '/[.](JPG)|(jpg)|(jpeg)|(JPEG)$/';
 $pattern_png = '/[.](PNG)|(png)$/';
 
-Image::configure(array('driver' => 'imagick'));
+//Image::configure(array('driver' => 'imagick'));
 
 if (!empty($_POST['avatar'])) //проверяем, отправил    ли пользователь изображение
 {
@@ -60,7 +60,7 @@ if    ($_FILES['avatar'] == '')
         if($w_src == $h_src)
             imagecopyresampled($dest, $im, 0, 0, 0, 0, $w, $w, $w_src, $w_src);
         $date = time();
-        imagejpeg($image, $dir.$date.".jpg");
+        imagejpeg($dest, $dir.$date.".jpg");
         $avatar = $dir_base.$date.".jpg";
         $delfull = $dir.$filename;
         unlink($delfull);
