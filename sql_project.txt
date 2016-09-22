@@ -1,0 +1,61 @@
+-- Каталог товаров из двух таблиц: Таблица категорий catalogs и Таблица каталог товаров products  связывается таблица по ключу id таблицы категорий с ключом id_catalog таблицы каталога товаров
+
+-- ---
+-- Globals
+-- ---
+
+-- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+-- SET FOREIGN_KEY_CHECKS=0;
+
+-- ---
+-- Table 'catalogs'
+-- Таблица категорий
+-- ---
+
+DROP TABLE IF EXISTS `catalogs`;
+		
+CREATE TABLE `catalogs` (
+  `id` INTEGER(11) NULL AUTO_INCREMENT DEFAULT NULL,
+  `name` MEDIUMTEXT(20) NOT NULL DEFAULT 'NULL',
+  PRIMARY KEY (`id`)
+) COMMENT 'Таблица категорий';
+
+-- ---
+-- Table 'products'
+-- каталог товаров
+-- ---
+
+DROP TABLE IF EXISTS `products`;
+		
+CREATE TABLE `products` (
+  `id` INTEGER(11) NULL AUTO_INCREMENT DEFAULT NULL,
+  `name` MEDIUMTEXT NOT NULL,
+  `price` DECIMAL(7,2) NULL DEFAULT 0.00,
+  `count` INTEGER(11) NULL DEFAULT NULL,
+  `mark` DOUBLE(4,1) NOT NULL DEFAULT 0.0,
+  `description` MEDIUMTEXT NULL DEFAULT NULL,
+  `id_catalog` INTEGER(11) NOT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) COMMENT 'каталог товаров';
+
+-- ---
+-- Foreign Keys 
+-- ---
+
+ALTER TABLE `products` ADD FOREIGN KEY (id_catalog) REFERENCES `catalogs` (`id`);
+
+-- ---
+-- Table Properties
+-- ---
+
+-- ALTER TABLE `catalogs` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `products` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ---
+-- Test Data
+-- ---
+
+-- INSERT INTO `catalogs` (`id`,`name`) VALUES
+-- ('','');
+-- INSERT INTO `products` (`id`,`name`,`price`,`count`,`mark`,`description`,`id_catalog`) VALUES
+-- ('','','','','','','');
