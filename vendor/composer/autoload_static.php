@@ -19,6 +19,7 @@ class ComposerStaticInit9bda966d4acb494e76a92300f0660ea1
         'S' => 
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\Translation\\' => 30,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
@@ -30,6 +31,10 @@ class ComposerStaticInit9bda966d4acb494e76a92300f0660ea1
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+        ),
+        'O' => 
+        array (
+            'Orbitale\\Component\\ImageMagick\\' => 31,
         ),
         'I' => 
         array (
@@ -60,6 +65,10 @@ class ComposerStaticInit9bda966d4acb494e76a92300f0660ea1
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Component\\Yaml\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
         'Symfony\\Component\\Translation\\' => 
         array (
@@ -92,6 +101,10 @@ class ComposerStaticInit9bda966d4acb494e76a92300f0660ea1
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Orbitale\\Component\\ImageMagick\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/orbitale/imagemagick-php',
         ),
         'Intervention\\Image\\' => 
         array (
@@ -140,6 +153,13 @@ class ComposerStaticInit9bda966d4acb494e76a92300f0660ea1
     );
 
     public static $prefixesPsr0 = array (
+        'I' => 
+        array (
+            'Imagick' => 
+            array (
+                0 => __DIR__ . '/..' . '/calcinai/php-imagick/src',
+            ),
+        ),
         'D' => 
         array (
             'Doctrine\\Common\\Inflector\\' => 

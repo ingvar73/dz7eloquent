@@ -1,0 +1,36 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Laravel template
+vendor/
+node_modules/
+
+# Laravel 4 specific
+bootstrap/compiled.php
+app/storage/
+
+# Laravel 5 & Lumen specific
+bootstrap/cache/
+.env.*.php
+.env.php
+.env
+
+# Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
+.rocketeer/
+
+.gitignore
+.idea/workspace.xml
+app/cache/
+tmp/
+upload/1474473751.jpg
+upload/1474474063.jpg
+upload/1474474109.jpg
+upload/1474475165.jpg
+upload/1474475200.jpg
+upload/1474475296.jpg
+upload/1474475542.jpg
+upload/1474475688.jpg
+upload/1474477204.jpg
+upload/1474477875.jpg
+upload/1474484640.jpg
+upload/1474485292.jpg
+upload/1474498963.jpg
+upload/e78efe2b83c9ee368ef98a50b9ca7bc4.jpg

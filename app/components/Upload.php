@@ -1,4 +1,6 @@
 <?php
+//use Intervention\Image\ImageManagerStatic as Image;
+
 $dir = $_SERVER['DOCUMENT_ROOT'].'/upload/';
 $dir_base = 'http://dz7.loftschool/upload/';
 $pattern_img = '/[.](JPG)|(jpg)|(gif)|(GIF)|(png)|(PNG)$/';
@@ -6,6 +8,7 @@ $pattern_gif = '/[.](GIF)|(gif)$/';
 $pattern_jpg = '/[.](JPG)|(jpg)|(jpeg)|(JPEG)$/';
 $pattern_png = '/[.](PNG)|(png)$/';
 
+Image::configure(array('driver' => 'imagick'));
 
 if (!empty($_POST['avatar'])) //проверяем, отправил    ли пользователь изображение
 {
@@ -28,6 +31,10 @@ if    ($_FILES['avatar'] == '')
         $filename = $_FILES['avatar']['name'];
         $source = $_FILES['avatar']['tmp_name'];
         $target = $dir.$filename;
+
+//        $image = Image::make($filename)->resize(480, 480);
+//        var_dump($image->filename);
+
         move_uploaded_file($source, $target);
         if(preg_match($pattern_gif, $filename)){
             $im = imagecreatefromgif($dir.$filename); //создаем в формате GIF
@@ -38,6 +45,9 @@ if    ($_FILES['avatar'] == '')
         if(preg_match($pattern_jpg, $filename)){
             $im = imagecreatefromjpeg($dir.$filename); //создаем в формате JPG
         }
+
+
+
         // Создание изображение "Взято с сайта www.codenet.ru"
         $w = 450;
         $w_src = imagesx($im); //вычисляем ширину
@@ -50,11 +60,11 @@ if    ($_FILES['avatar'] == '')
         if($w_src == $h_src)
             imagecopyresampled($dest, $im, 0, 0, 0, 0, $w, $w, $w_src, $w_src);
         $date = time();
-        imagejpeg($dest, $dir.$date.".jpg");
+        imagejpeg($image, $dir.$date.".jpg");
         $avatar = $dir_base.$date.".jpg";
         $delfull = $dir.$filename;
         unlink($delfull);
     } else {
-        exit("Автар или изображение должно быть в формате <strong>JPG, GIF или PNG</strong>");
+        exit("Аватар или изображение должно быть в формате <strong>JPG, GIF или PNG</strong>");
     }
 }
